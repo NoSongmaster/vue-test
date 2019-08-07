@@ -57,7 +57,7 @@ const router = new Router({
           // 到/dashboard地址
           path: "/dashboard",
           name: "dashboard",
-          // 直接渲染router-view. 这个代表着父级路由的渲染代码，不进行任何渲染和修改.留在页面上
+          // 直接渲染router-view.这个代表着父级路由的渲染代码，不进行任何渲染和修改.留在页面上
           component: { render: h => h("router-view") },
           // /dashboard的子地址
           children: [
