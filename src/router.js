@@ -133,21 +133,16 @@ const router = new Router({
       path: "*",
       name: "404",
       component: NotFound
-    },
-    {
-      path: "/about",
-      name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () =>
-        import(/* webpackChunkName: "about" */ "./views/About.vue")
     }
   ]
 });
-
+// 页面加载进度条
 router.beforeEach((to, from, next) => {
-  NProgress.start();
+  // 如果操作是在当前页面。不进行NProgress
+  if (to.path !== from.path) {
+    NProgress.start();
+  }
+
   next();
 });
 

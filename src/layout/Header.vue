@@ -1,9 +1,13 @@
 <template>
-  <dir>Header</dir>
+  <dir class="header">Header</dir>
 </template>
 
 <script>
 export default {};
 </script>
 
-<style></style>
+<style scoped>
+.header {
+  float: right;
+}
+</style>

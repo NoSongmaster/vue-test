@@ -11,11 +11,15 @@ import store from "./store";
 // 参考https://cli.vuejs.org/zh/guide/css.html#%E5%90%91%E9%A2%84%E5%A4%84%E7%90%86%E5%99%A8-loader-%E4%BC%A0%E9%80%92%E9%80%89%E9%A1%B9
 // import "ant-design-vue/dist/antd.less";
 // 导入方式2: 使用babel按需导入
-import { Button } from "ant-design-vue";
+import { Button, Layout, Icon, Drawer, Radio } from "ant-design-vue";
 
 Vue.config.productionTip = false;
 // Vue中使用 Antd
 Vue.use(Button);
+Vue.use(Layout);
+Vue.use(Icon);
+Vue.use(Drawer);
+Vue.use(Radio);
 new Vue({
   router,
   store,
