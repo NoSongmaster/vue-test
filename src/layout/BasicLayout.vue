@@ -11,11 +11,13 @@
         :trigger="null"
         collapsible
         v-model="collapsed"
+        width="256px"
       >
         <div class="logo">
           Ant-Design-Vue
         </div>
-        <SiderMenu />
+        <!-- 将theme传入到子vue中, 值为 navTheme的值. theme代表 整体风格颜色样式 -->
+        <SiderMenu :theme="navTheme" />
       </a-layout-sider>
       <a-layout>
         <a-layout-header style="background: #fff; padding: 0">

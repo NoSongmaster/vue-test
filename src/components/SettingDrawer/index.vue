@@ -46,7 +46,9 @@ export default {
   data() {
     return {
       visible: false,
+      // 定义整体风格
       navTheme: "dark",
+      // 定义导航模式
       navLayout: "left"
     };
   },
