@@ -1,8 +1,12 @@
 import Vue from "vue";
 import Router from "vue-router";
+import findLast from "lodash/findLast";
 import NotFound from "./views/404";
+import Forbidden from "./views/403";
 import NProgress from "nprogress";
+import { notification } from "ant-design-vue";
 import "nprogress/nprogress.css";
+import { check, isLogin } from "./utils/auth";
 // import Home from "./views/Home.vue";
 // import RenderRouterView from "./components/RenderRouterView";
 Vue.use(Router);
@@ -44,6 +48,8 @@ const router = new Router({
       // 层级嵌套:
       // 首先是/地址
       path: "/",
+      // 设置可以通过访问的用户角色权限
+      meta: { authority: ["user", "admin"] },
       // 进行导入了 ./layout/BasicLayout.vue 这部分渲染代码就留到了页面上。
       component: () =>
         import(/* webpackChunkName: "user" */ "./layout/BasicLayout"),
@@ -84,7 +90,8 @@ const router = new Router({
           path: "/form",
           name: "form",
           component: { render: h => h("router-view") },
-          meta: { icon: "form", title: "表单" },
+          // 在form表单中只允许admin可以访问
+          meta: { icon: "form", title: "表单", authority: ["admin"] },
           children: [
             {
               path: "/form/basic-form",
@@ -139,6 +146,12 @@ const router = new Router({
     },
     //
     {
+      path: "/403",
+      name: "403",
+      hideInMenu: true,
+      component: Forbidden
+    },
+    {
       path: "*",
       name: "404",
       hideInMenu: true,
@@ -152,7 +165,30 @@ router.beforeEach((to, from, next) => {
   if (to.path !== from.path) {
     NProgress.start();
   }
-
+  console.log(record);
+  console.log(to.matched);
+  // 找到离 跳转记录 最近的 meta 设置authority 字段的记录
+  // 从当前要 跳转的地址 to.matched 是一个列表 里面保存的是字典对象 范例填写: ["/", "/dashboard", "/dashboad/analysis"]
+  // findLast([1,2,3,4,5], function(n))  这个匿名函数 为 找到 n 中 n.meta.authority有值 的这条数据进行返回
+  const record = findLast(to.matched, record => record.meta.authority);
+  // 此处record 就是一个 url可以跳转的路径。但我们需要判断的是这个路径允许通过的 authority 是什么
+  console.log(record);
+  // 判断当前用户是否可以查看路径下的内容、如果不可以查看
+  if (record && !check(record.meta.authority)) {
+    if (!isLogin && to.path !== "/user/login") {
+      next({
+        path: "/user/login"
+      });
+    } else if (to.path !== "/403") {
+      // 右上角错误提示信息，
+      notification.error({
+        message: "403",
+        description: "你没有权限访问， 请联系管理员咨询"
+      });
+      next({ path: "/403" });
+    }
+    NProgress.done();
+  }
   next();
 });
 

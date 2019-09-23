@@ -34,6 +34,7 @@
  * SubMenu1.vue https://github.com/vueComponent/ant-design-vue/blob/master/components/menu/demo/SubMenu1.vue
  * */
 import SubMenu from "./SubMenu";
+import { check } from "../utils/auth";
 export default {
   // 用于接收父级vue传入参数
   props: {
@@ -80,7 +81,13 @@ export default {
       // 定义一个菜单信息
       const menuData = [];
       // 循环传入的routers信息
-      routers.forEach(item => {
+      // 将原有的routers.forEach(item=>{...}) 修改为for 循环。为了下面的break
+      for (let item of routers) {
+        // 校验是否 routers 是否允许通过 不允许直接break 不生成菜单
+        if (item.meta && item.meta.authority && !check(item.meta.authority)) {
+          break;
+        }
+
         // 如果item存在名字，并且没有被隐藏
         if (item.name && !item.hideInMenu) {
           // 保存到打开Map中
@@ -117,7 +124,7 @@ export default {
           // 递归处理 - 获取菜单信息- 保存到menuData中
           menuData.push(...this.getMenuData(item.children));
         }
-      });
+      }
       return menuData;
     }
   }
